@@ -21,7 +21,7 @@
 .extern init_c
 
 BEGIN_FUNC(_start)
-	mrs	x8, mpidr_el1
+	mrs	x8, mpidr_el1    //mpidr_el1存了CPU核的信息，启动CPU0号核
 	and	x8, x8,	#0xFF
 	cbz	x8, primary
 
@@ -68,7 +68,7 @@ wait_until_smp_enabled:
 primary:
 
 	/* Turn to el1 from other exception levels. */
-	bl 	arm64_elX_to_el1
+	bl 	arm64_elX_to_el1  //带链接的跳转指令，
 
 	/* Prepare stack pointer and jump to C. */
 	adr 	x0, boot_cpu_stack

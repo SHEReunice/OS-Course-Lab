@@ -70,8 +70,10 @@
 BEGIN_FUNC(arm64_elX_to_el1)
 	/* LAB 1 TODO 1 BEGIN */
 	/* BLANK BEGIN */
+	mrs x9, CurrentEL
 	/* BLANK END */
 	/* LAB 1 TODO 1 END */
+	
 
 	// Check the current exception level.
 	cmp x9, CURRENTEL_EL1
@@ -89,8 +91,13 @@ BEGIN_FUNC(arm64_elX_to_el1)
 	// Set the return address and exception level.
 	/* LAB 1 TODO 2 BEGIN */
 	/* BLANK BEGIN */
+	adr x9, .Ltarget  //读取返回的地址
+	msr elr_el3, x9    //写到elr_el3寄存器中
+	mov x9, SPSR_ELX_DAIF | SPSR_ELX_EL1H  //读取DAIF和M域对应位
+	msr spsr_el3, x9 //将操作数送到程序状态寄存器的特定域
 	/* BLANK END */
 	/* LAB 1 TODO 2 END */
+	
 
 .Lin_el2:
 	// Disable EL1 timer traps and the timer offset.
@@ -139,6 +146,7 @@ BEGIN_FUNC(arm64_elX_to_el1)
 	eret
 
 .Ltarget:
+	mrs x9, CurrentEL
 	ret
 END_FUNC(arm64_elX_to_el1)
 
@@ -267,6 +275,8 @@ BEGIN_FUNC(el1_mmu_activate)
 	/* Enable MMU */
 	/* LAB 1 TODO 4 BEGIN */
 	/* BLANK BEGIN */
+	/* msr sctlr_el1, x0*/
+	orr x8, x8, #SCTLR_EL1_M
 	/* BLANK END */
 	/* LAB 1 TODO 4 END */
 	/* Disable alignment checking */
